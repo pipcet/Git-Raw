@@ -30,6 +30,11 @@ Retrieve the filename of the tree entry.
 
 Retrieve the object pointed by the tree entry.
 
+=head2 filemode( )
+
+Retrieve the file mode of the tree entry, as a string containing six
+octal digits, such as "100644" or "040000".
+
 =head1 AUTHOR
 
 Alessandro Ghedini <alexbio@cpan.org>
