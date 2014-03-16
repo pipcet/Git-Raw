@@ -399,7 +399,13 @@ status(self, ...)
 
 		status_hv = newHV();
 		for (i = 0; i < count; i++) {
+
 			AV *flags;
+
+			HV *flag;
+			HV *flag_index;
+			HV *flag_wt;
+
 			HV *file_status_hv;
 
 			const char *path = NULL;
@@ -407,6 +413,23 @@ status(self, ...)
 
 			if ((entry = git_status_byindex(list, i)) == NULL)
 				continue;
+
+			flag = newHV();
+			flag_index = newHV();
+			flag_wt = newHV();
+
+			hv_stores(flag_index, "new", newSViv(!!(entry->status&GIT_STATUS_INDEX_NEW)));
+			hv_stores(flag_index, "modified", newSViv(!!(entry->status&GIT_STATUS_INDEX_MODIFIED)));
+			hv_stores(flag_index, "deleted", newSViv(!!(entry->status&GIT_STATUS_INDEX_DELETED)));
+			hv_stores(flag_index, "renamed", newSViv(!!(entry->status&GIT_STATUS_INDEX_RENAMED)));
+
+			hv_stores(flag_wt, "new", newSViv(!!(entry->status&GIT_STATUS_WT_NEW)));
+			hv_stores(flag_wt, "modified", newSViv(!!(entry->status&GIT_STATUS_WT_MODIFIED)));
+			hv_stores(flag_wt, "deleted", newSViv(!!(entry->status&GIT_STATUS_WT_DELETED)));
+			hv_stores(flag_wt, "renamed", newSViv(!!(entry->status&GIT_STATUS_WT_RENAMED)));
+
+			hv_stores(flag, "index", newRV_noinc((SV *)flag_index));
+			hv_stores(flag, "worktree", newRV_noinc((SV *)flag_wt));
 
 			flags = newAV();
 
@@ -465,6 +488,7 @@ status(self, ...)
 			}
 
 			hv_stores(file_status_hv, "flags", newRV_noinc((SV *) flags));
+			hv_stores(file_status_hv, "flag", newRV_noinc((SV *) flag));
 			hv_store(status_hv, path, strlen(path), newRV_noinc((SV *) file_status_hv), 0);
 		}
 
