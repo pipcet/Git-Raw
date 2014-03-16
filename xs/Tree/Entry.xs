@@ -14,6 +14,19 @@ id(self)
 	OUTPUT: RETVAL
 
 SV *
+filemode(self)
+	Tree_Entry self
+
+	PREINIT:
+		int mode;
+
+	CODE:
+		mode = git_tree_entry_filemode(self);
+		RETVAL = newSVpvf("%06o", mode);
+
+	OUTPUT: RETVAL
+
+SV *
 name(self)
 	Tree_Entry self
 
