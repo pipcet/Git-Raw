@@ -29,7 +29,8 @@ Retrieve the id of the tree, as string.
 
 =head2 entries( )
 
-Retrieve a list of L<Git::Raw::Tree::Entry> objects.
+Retrieve a list of L<Git::Raw::Tree::Entry> objects. This method
+returns a single array reference, not a list of objects.
 
 =head2 entry_byname( $name )
 
