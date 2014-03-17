@@ -2,7 +2,11 @@ Revision history for Git-Raw
 
 {{$NEXT}}
 
- - Update libgit2 to 66d9e04 (GH#53, GH#56) (thanks, @jacquesg!)
+ - Fix segfaults caused by invalid object creation (GH#66) (thanks, @pipcet!)
+
+0.32      2014-03-16 15:02:47+01:00 Europe/Rome
+
+ - Update libgit2 to 648a985 (GH#53, GH#56) (thanks, @jacquesg!)
  - Minor Win32 build fix
  - Add Reflog class (GH#55) (thanks, @jacquesg!)
  - Suport non-default stash flags (GH#56) (thanks, @jacquesg!)
