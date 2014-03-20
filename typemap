@@ -19,7 +19,7 @@ Reflog					T_GIT_REF
 RefSpec					T_GIT_REF
 Reference				T_GIT_REF
 Remote					T_GIT_REF
-Repository				T_GIT_REF
+Repository				T_GIT_REPOSITORY
 Signature				T_GIT_REF
 Tag					T_GIT_REF
 Tree					T_GIT_REF
@@ -29,10 +29,30 @@ Walker					T_GIT_REF
 
 OUTPUT
 T_GIT_REF
-	sv_setref_pv($arg, \"Git::Raw::${(my $ntt = $ntype) =~ s/_/::/g;\$ntt}\", (void *) $var);
+	{
+		git_double_pointer d = malloc(sizeof *d);
+
+		d->p = (void *) $var;
+		d->repo = NULL;
+		sv_setref_pv($arg, \"Git::Raw::${(my $ntt = $ntype) =~ s/_/::/g;\$ntt}\", (void *) d);
+	}
 
 INPUT
 T_GIT_REF
+	if (sv_isobject($arg) &&
+	    sv_derived_from($arg, \"Git::Raw::${(my $ntt = $ntype) =~ s/_/::/g;\$ntt}\")) {
+		git_double_pointer d = INT2PTR(git_double_pointer, SvIV((SV *) SvRV($arg)));
+
+		$var = ($type) d->p;
+	} else
+		Perl_croak(aTHX_ \"$var is not of type Git::Raw::${(my $ntt = $ntype) =~ s/_/::/g;\$ntt}\");
+
+OUTPUT
+T_GIT_REPOSITORY
+	sv_setref_pv($arg, \"Git::Raw::${(my $ntt = $ntype) =~ s/_/::/g;\$ntt}\", (void *) $var);
+
+INPUT
+T_GIT_REPOSITORY
 	if (sv_isobject($arg) &&
 	    sv_derived_from($arg, \"Git::Raw::${(my $ntt = $ntype) =~ s/_/::/g;\$ntt}\"))
 		$var = INT2PTR($type, SvIV((SV *) SvRV($arg)));

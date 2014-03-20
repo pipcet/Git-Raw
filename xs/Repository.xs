@@ -197,7 +197,7 @@ index(self)
 		Index index;
 
 	CODE:
-		rc = git_repository_index(&index, GIT_SV_TO_PTR(Repository, self));
+		rc = git_repository_index(&index, GIT_REPOSITORY_SV_TO_PTR(Repository, self));
 		git_check_error(rc);
 
 		GIT_NEW_OBJ_WITH_MAGIC(
@@ -220,10 +220,10 @@ head(self, ...)
 		Signature sig;
 
 	CODE:
-		repo = GIT_SV_TO_PTR(Repository, self);
+		repo = GIT_REPOSITORY_SV_TO_PTR(Repository, self);
 
 		if (items == 2) {
-			Reference new_head = GIT_SV_TO_PTR(Reference, ST(1));
+			Reference new_head = GIT_REPOSITORY_SV_TO_PTR(Reference, ST(1));
 
 			rc = git_signature_default(&sig, repo);
 			git_check_error(rc);
@@ -267,7 +267,7 @@ lookup(self, id)
 		git_check_error(rc);
 
 		rc = git_object_lookup_prefix(
-			&obj, GIT_SV_TO_PTR(Repository, self), &oid, len, GIT_OBJ_ANY
+			&obj, GIT_REPOSITORY_SV_TO_PTR(Repository, self), &oid, len, GIT_OBJ_ANY
 		);
 		git_check_error(rc);
 
@@ -740,7 +740,7 @@ branches(self)
 		Repository repo;
 
 	PPCODE:
-		repo = GIT_SV_TO_PTR(Repository, self);
+		repo = GIT_REPOSITORY_SV_TO_PTR(Repository, self);
 
 		rc = git_branch_iterator_new(
 			&itr, repo, GIT_BRANCH_LOCAL | GIT_BRANCH_REMOTE
@@ -780,7 +780,7 @@ remotes(self)
 		Repository repo;
 
 	PPCODE:
-		repo = GIT_SV_TO_PTR(Repository, self);
+		repo = GIT_REPOSITORY_SV_TO_PTR(Repository, self);
 
 		rc = git_remote_list(&remotes, repo);
 		git_check_error(rc);
@@ -824,7 +824,7 @@ refs(self)
 		git_reference_iterator *itr;
 
 	PPCODE:
-		rc = git_reference_iterator_new(&itr, GIT_SV_TO_PTR(Repository, self));
+		rc = git_reference_iterator_new(&itr, GIT_REPOSITORY_SV_TO_PTR(Repository, self));
 		git_check_error(rc);
 
 		while ((rc = git_reference_next(&ref, itr)) == 0) {
@@ -895,7 +895,7 @@ blame (self, file)
 
 	CODE:
 		rc = git_blame_file(
-			&blame, GIT_SV_TO_PTR(Repository, self), file, &options);
+			&blame, GIT_REPOSITORY_SV_TO_PTR(Repository, self), file, &options);
 		git_check_error(rc);
 
 		GIT_NEW_OBJ_WITH_MAGIC(

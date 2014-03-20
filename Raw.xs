@@ -71,6 +71,11 @@ typedef struct {
 
 typedef git_raw_remote * Remote;
 
+typedef struct {
+	void *p;
+	SV *repo;
+} *git_double_pointer;
+
 STATIC MGVTBL null_mg_vtbl = {
 	NULL, /* get */
 	NULL, /* set */
@@ -109,21 +114,23 @@ STATIC void *xs_object_magic_get_struct(pTHX_ SV *sv) {
 	return (mg) ? mg -> mg_ptr : NULL;
 }
 
-#define GIT_SV_TO_MAGIC(SV) \
-	xs_object_magic_get_struct(aTHX_ SvRV(SV))
+#define GIT_SV_TO_MAGIC(sv) \
+	((SV *)(INT2PTR(git_double_pointer, SvIV((SV *) SvRV(sv))))->repo)
 
 #define GIT_NEW_OBJ(rv, class, sv)				\
 	STMT_START {						\
-		(rv) = sv_setref_pv(newSV(0), class, sv);	\
+		git_double_pointer d = malloc(sizeof *d);       \
+		d->p = sv; \
+		d->repo = NULL; \
+		(rv) = sv_setref_pv(newSV(0), class, d);	\
 	} STMT_END
 
 #define GIT_NEW_OBJ_WITH_MAGIC(rv, class, sv, magic)		\
 	STMT_START {						\
-		(rv) = sv_setref_pv(newSV(0), class, sv);	\
-								\
-		xs_object_magic_attach_struct(			\
-			aTHX_ SvRV(rv), SvREFCNT_inc_NN(magic)	\
-		);						\
+		git_double_pointer d = malloc(sizeof *d);       \
+		d->p = sv; \
+		d->repo = SvREFCNT_inc_NN(magic); \
+		(rv) = sv_setref_pv(newSV(0), class, d);	\
 	} STMT_END
 
 STATIC void git_check_error(int err) {
@@ -186,12 +193,16 @@ STATIC git_object *git_sv_to_obj(SV *sv) {
 		sv_derived_from(sv, "Git::Raw::Tag") ||
 		sv_derived_from(sv, "Git::Raw::Tree")
 	))
-		return INT2PTR(git_object *, SvIV((SV *) SvRV(sv)));
+	{
+		git_double_pointer d = INT2PTR(git_double_pointer, SvIV((SV *) SvRV(sv)));
+
+		return d->p;
+	}
 
 	return NULL;
 }
 
-STATIC void *git_sv_to_ptr(const char *type, SV *sv) {
+STATIC void *git_repository_sv_to_ptr(const char *type, SV *sv) {
 	SV *full_type = sv_2mortal(newSVpvf("Git::Raw::%s", type));
 
 	if (sv_isobject(sv) && sv_derived_from(sv, SvPV_nolen(full_type)))
@@ -202,8 +213,26 @@ STATIC void *git_sv_to_ptr(const char *type, SV *sv) {
 	return NULL;
 }
 
+STATIC void *git_sv_to_ptr(const char *type, SV *sv) {
+	SV *full_type = sv_2mortal(newSVpvf("Git::Raw::%s", type));
+
+	if (sv_isobject(sv) && sv_derived_from(sv, SvPV_nolen(full_type)))
+	{
+		git_double_pointer d = INT2PTR(git_double_pointer, SvIV((SV *) SvRV(sv)));
+
+		return d->p;
+	}
+
+	Perl_croak(aTHX_ "Argument is not of type %s", SvPV_nolen(full_type));
+
+	return NULL;
+}
+
 #define GIT_SV_TO_PTR(type, sv) \
 	git_sv_to_ptr(#type, sv)
+
+#define GIT_REPOSITORY_SV_TO_PTR(type, sv) \
+	git_repository_sv_to_ptr(#type, sv)
 
 STATIC SV *git_oid_to_sv(const git_oid *oid) {
 	char out[41];
