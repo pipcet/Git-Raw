@@ -112,6 +112,8 @@ open(class, path)
 		Repository repo;
 
 	CODE:
+		git_threads_init();
+
 		rc = git_repository_open(&repo, SvPVbyte_nolen(path));
 		git_check_error(rc);
 
@@ -161,6 +163,8 @@ new(class)
 		Repository repo;
 
 	CODE:
+		git_threads_init();
+
 		rc = git_repository_new(&repo);
 		git_check_error(rc);
 

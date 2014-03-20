@@ -122,7 +122,7 @@ TEMPLATE
 
 override _build_WriteMakefile_args => sub {
 	my $inc = '-Ixs/libgit2 -Ixs/libgit2/src -Ixs/libgit2/include -Ixs/libgit2/deps/http-parser -Ixs/libgit2/deps/zlib';
-	my $def = '-DNO_VIZ -DSTDC -DNO_GZIP -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE';
+	my $def = '-DNO_VIZ -DSTDC -DNO_GZIP -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -DGIT_THREADS';
 
 	my $bits = $Config{longsize} == 4 ? '-m32' : '';
 	my $ccflags = "$bits -Wall -Wno-unused-variable";
