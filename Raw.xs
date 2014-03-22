@@ -213,6 +213,12 @@ STATIC void *git_repository_sv_to_ptr(const char *type, SV *sv) {
 	return NULL;
 }
 
+STATIC void git_sv_set_ptr(SV *sv, void *p) {
+	git_double_pointer d = INT2PTR(git_double_pointer, SvIVx((SV *) SvRV(sv)));
+
+	d->p = p;
+}
+
 STATIC void *git_sv_to_ptr(const char *type, SV *sv) {
 	SV *full_type = sv_2mortal(newSVpvf("Git::Raw::%s", type));
 
