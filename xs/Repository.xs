@@ -1002,6 +1002,25 @@ is_shallow(self)
 
 	OUTPUT: RETVAL
 
+/*
+ * This code taken from http://people.apache.org/~stas/Example-CLONE-0.02.tar.gz
+ */
+
+void
+_possess(self)
+	SV *self
+
+	PREINIT:
+		Repository repo;
+		Repository new_repo;
+		int rc;
+
+	CODE:
+		repo = INT2PTR(Repository, SvIV((SV*) SvRV(self)));
+		rc = git_repository_open(&new_repo, git_repository_path(repo));
+		git_check_error(rc);
+		sv_setiv((SV *)SvRV(self), (IV)new_repo);
+
 void
 DESTROY(self)
 	Repository self

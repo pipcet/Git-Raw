@@ -36,6 +36,19 @@ T_GIT_REF
 		d->repo = NULL;
 		sv_setref_pv($arg, \"Git::Raw::${(my $ntt = $ntype) =~ s/_/::/g;\$ntt}\", (void *) d);
 	}
+	{
+		dSP;
+		I32 ax;
+		int count;
+
+		ENTER; SAVETMPS; PUSHMARK(SP);
+		XPUSHs($arg);
+		PUTBACK;
+
+		call_method("Git::Raw::Tree::register", G_DISCARD);
+
+		PUTBACK; FREETMPS; LEAVE;
+	}
 
 INPUT
 T_GIT_REF
@@ -50,6 +63,19 @@ T_GIT_REF
 OUTPUT
 T_GIT_REPOSITORY
 	sv_setref_pv($arg, \"Git::Raw::${(my $ntt = $ntype) =~ s/_/::/g;\$ntt}\", (void *) $var);
+	if (0) {
+		dSP;
+		I32 ax;
+		int count;
+
+		ENTER; SAVETMPS; PUSHMARK(SP);
+		XPUSHs($arg);
+		PUTBACK;
+
+		call_method("register", G_DISCARD);
+
+		PUTBACK; FREETMPS; LEAVE;
+	}
 
 INPUT
 T_GIT_REPOSITORY

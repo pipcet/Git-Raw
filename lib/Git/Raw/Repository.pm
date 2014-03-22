@@ -704,4 +704,24 @@ See http://dev.perl.org/licenses/ for more information.
 
 =cut
 
+my %objects;
+
+sub register {
+    my ($self) = @_;
+    $objects{$$self} = $self;
+    Scalar::Util::weaken($objects{$$self});
+}
+
+sub CLONE {
+    for my $key (keys %objects) {
+	my $self = delete $objects{$key};
+
+	next unless $self; # XXX delete in DESTROY instead
+
+	$self->_possess;
+
+	$self->register;
+    }
+}
+
 1; # End of Git::Raw::Repository

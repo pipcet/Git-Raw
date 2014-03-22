@@ -174,4 +174,22 @@ See http://dev.perl.org/licenses/ for more information.
 
 =cut
 
+my %objects;
+
+sub register {
+    $objects{$$self} = $self;
+    Scalar::Util::weaken($objects{$$self});
+}
+
+sub CLONE {
+    for my $key (keys %objects) {
+	my $self = delete $objects{$key};
+
+	next unless $self;
+	$self->_possess;
+
+	$self->register;
+    }
+}
+
 1; # End of Git::Raw::Tree

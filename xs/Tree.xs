@@ -274,6 +274,40 @@ is_blob(self)
 
 	OUTPUT: RETVAL
 
+/*
+ * This code taken from http://people.apache.org/~stas/Example-CLONE-0.02.tar.gz
+ */
+
+void
+_possess(self)
+	SV *self
+
+	PREINIT:
+		git_object *obj;
+		int rc;
+		git_double_pointer d;
+
+	CODE:
+		d = malloc(sizeof *d);
+		rc = git_object_dup(&obj, GIT_SV_TO_PTR(Tree, self));
+		git_check_error(rc);
+		d->p = obj;
+		d->repo = GIT_SV_TO_MAGIC(self);
+		{
+			dSP;
+			I32 ax;
+			int count;
+
+			ENTER; SAVETMPS; PUSHMARK(SP);
+			XPUSHs(d->repo);
+			PUTBACK;
+
+			call_method("_possess", G_DISCARD);
+
+			PUTBACK; FREETMPS; LEAVE;
+		}
+		sv_setiv((SV *)SvRV(self), (IV)d);
+
 void
 DESTROY(self)
 	SV *self
