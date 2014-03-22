@@ -57,3 +57,8 @@ See http://dev.perl.org/licenses/ for more information.
 =cut
 
 1; # End of Git::Raw::Diff::Hunk
+sub CLONE_SKIP {
+    return 1;
+}
+
+1;
