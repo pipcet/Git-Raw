@@ -87,7 +87,7 @@ lookup(class, repo, id)
 		rc = git_oid_fromstrn(&oid, id_str, len);
 		git_check_error(rc);
 
-		repo_ptr = GIT_SV_TO_PTR(Repository, repo);
+		repo_ptr = GIT_REPOSITORY_SV_TO_PTR(Repository, repo);
 		rc = git_commit_lookup_prefix(&commit, repo_ptr, &oid, len);
 		git_check_error(rc);
 
