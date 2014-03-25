@@ -123,6 +123,18 @@ message(self)
 	OUTPUT: RETVAL
 
 SV *
+raw_header(self)
+	Commit self
+
+	PREINIT:
+		const char *msg;
+	CODE:
+		msg = git_commit_raw_header(self);
+		RETVAL = newSVpv(msg, 0);
+
+	OUTPUT: RETVAL
+
+SV *
 summary(self)
 	Commit self
 
