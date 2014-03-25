@@ -27,11 +27,11 @@ create(class, name, repo, object, ...)
 		else
 			oid = git_tree_id(GIT_SV_TO_PTR(Tree, object));
 
-		rc = git_signature_default(&sig, GIT_SV_TO_PTR(Repository, repo));
+		rc = git_signature_default(&sig, GIT_REPOSITORY_SV_TO_PTR(Repository, repo));
 		git_check_error(rc);
 
 		rc = git_reference_create(
-			&ref, GIT_SV_TO_PTR(Repository, repo),
+			&ref, GIT_REPOSITORY_SV_TO_PTR(Repository, repo),
 			name, oid, force, sig, NULL
 		);
 		git_signature_free(sig);
@@ -53,7 +53,7 @@ lookup(class, name, repo)
 
 	CODE:
 		rc = git_reference_lookup(
-			&ref, GIT_SV_TO_PTR(Repository, repo),
+			&ref, GIT_REPOSITORY_SV_TO_PTR(Repository, repo),
 			SvPVbyte_nolen(name)
 		);
 		git_check_error(rc);

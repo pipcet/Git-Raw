@@ -10,7 +10,7 @@ create(class, repo)
 		Walker walk;
 
 	CODE:
-		rc = git_revwalk_new(&walk, GIT_SV_TO_PTR(Repository, repo));
+		rc = git_revwalk_new(&walk, GIT_REPOSITORY_SV_TO_PTR(Repository, repo));
 		git_check_error(rc);
 
 		GIT_NEW_OBJ_WITH_MAGIC(

@@ -15,7 +15,7 @@ create(class, repo, name, url)
 
 	CODE:
 		rc = git_remote_create(
-			&r, GIT_SV_TO_PTR(Repository, repo),
+			&r, GIT_REPOSITORY_SV_TO_PTR(Repository, repo),
 			SvPVbyte_nolen(name), SvPVbyte_nolen(url)
 		);
 		git_check_error(rc);
@@ -50,7 +50,7 @@ create_inmemory(class, repo, fetch, url)
 			f = SvPVbyte_nolen(fetch);
 
 		rc = git_remote_create_inmemory(
-			&r, GIT_SV_TO_PTR(Repository, repo),
+			&r, GIT_REPOSITORY_SV_TO_PTR(Repository, repo),
 			f, SvPVbyte_nolen(url)
 		);
 		git_check_error(rc);
@@ -80,7 +80,7 @@ load(class, repo, name)
 	CODE:
 
 		rc = git_remote_load(
-			&r, GIT_SV_TO_PTR(Repository, repo),
+			&r, GIT_REPOSITORY_SV_TO_PTR(Repository, repo),
 			SvPVbyte_nolen(name));
 		git_check_error(rc);
 

@@ -24,11 +24,11 @@ create(class, repo, name, target)
 		obj = (Commit) git_sv_to_obj(target);
 
 	CODE:
-		rc = git_signature_default(&sig, GIT_SV_TO_PTR(Repository, repo));
+		rc = git_signature_default(&sig, GIT_REPOSITORY_SV_TO_PTR(Repository, repo));
 		git_check_error(rc);
 
 		rc = git_branch_create(
-			&ref, GIT_SV_TO_PTR(Repository, repo),
+			&ref, GIT_REPOSITORY_SV_TO_PTR(Repository, repo),
 			SvPVbyte_nolen(name), obj, 0, sig, NULL
 		);
 
@@ -58,7 +58,7 @@ lookup(class, repo, name, is_local)
 
 	CODE:
 		rc = git_branch_lookup(
-			&branch, GIT_SV_TO_PTR(Repository, repo),
+			&branch, GIT_REPOSITORY_SV_TO_PTR(Repository, repo),
 			SvPVbyte_nolen(name), type
 		);
 		git_check_error(rc);

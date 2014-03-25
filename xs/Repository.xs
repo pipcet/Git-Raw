@@ -1002,9 +1002,7 @@ is_shallow(self)
 
 	OUTPUT: RETVAL
 
-/*
- * This code taken from http://people.apache.org/~stas/Example-CLONE-0.02.tar.gz
- */
+# This code taken from http://people.apache.org/~stas/Example-CLONE-0.02.tar.gz
 
 void
 _possess(self)

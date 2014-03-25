@@ -24,7 +24,7 @@ lookup(class, repo, id)
 		rc = git_oid_fromstrn(&oid, id_str, len);
 		git_check_error(rc);
 
-		repo_ptr = GIT_SV_TO_PTR(Repository, repo);
+		repo_ptr = GIT_REPOSITORY_SV_TO_PTR(Repository, repo);
 
 		rc = git_tree_lookup_prefix(&tree, repo_ptr, &oid, len);
 		git_check_error(rc);
@@ -274,9 +274,7 @@ is_blob(self)
 
 	OUTPUT: RETVAL
 
-/*
- * This code taken from http://people.apache.org/~stas/Example-CLONE-0.02.tar.gz
- */
+# This code taken from http://people.apache.org/~stas/Example-CLONE-0.02.tar.gz
 
 void
 _possess(self)

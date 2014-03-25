@@ -18,7 +18,7 @@ create(class, repo, buffer)
 		Repository repo_ptr;
 
 	CODE:
-		repo_ptr = GIT_SV_TO_PTR(Repository, repo);
+		repo_ptr = GIT_REPOSITORY_SV_TO_PTR(Repository, repo);
 
 		buffer_str = SvPVbyte(buffer, len);
 		rc = git_blob_create_frombuffer(&oid, repo_ptr, buffer_str, len);
@@ -53,7 +53,7 @@ lookup(class, repo, id)
 		rc = git_oid_fromstrn(&oid, id_str, len);
 		git_check_error(rc);
 
-		rc = git_blob_lookup_prefix(&blob, GIT_SV_TO_PTR(Repository, repo), &oid, len);
+		rc = git_blob_lookup_prefix(&blob, GIT_REPOSITORY_SV_TO_PTR(Repository, repo), &oid, len);
 		git_check_error(rc);
 
 		GIT_NEW_OBJ_WITH_MAGIC(

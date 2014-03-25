@@ -23,7 +23,7 @@ create(class, repo, name, msg, tagger, target)
 		if (obj == NULL)
 			Perl_croak(aTHX_ "Target is not of a valid type");
 
-		repo_ptr = GIT_SV_TO_PTR(Repository, repo);
+		repo_ptr = GIT_REPOSITORY_SV_TO_PTR(Repository, repo);
 
 		rc = git_tag_create(
 			&oid, repo_ptr, SvPVbyte_nolen(name),
@@ -61,7 +61,7 @@ lookup(class, repo, id)
 		rc = git_oid_fromstrn(&oid, id_str, len);
 		git_check_error(rc);
 
-		rc = git_tag_lookup_prefix(&tag, GIT_SV_TO_PTR(Repository, repo), &oid, len);
+		rc = git_tag_lookup_prefix(&tag, GIT_REPOSITORY_SV_TO_PTR(Repository, repo), &oid, len);
 		git_check_error(rc);
 
 		GIT_NEW_OBJ_WITH_MAGIC(
@@ -81,7 +81,7 @@ foreach(class, repo, cb)
 
 	CODE:
 		git_foreach_payload payload = {
-			GIT_SV_TO_PTR(Repository, repo),
+			GIT_REPOSITORY_SV_TO_PTR(Repository, repo),
 			repo,
 			cb,
 			SvPVbyte_nolen(class)

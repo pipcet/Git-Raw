@@ -51,7 +51,7 @@ foreach(class, repo, cb)
 
 	CODE:
 		git_foreach_payload payload = {
-			GIT_SV_TO_PTR(Repository, repo),
+			GIT_REPOSITORY_SV_TO_PTR(Repository, repo),
 			repo,
 			cb,
 			NULL

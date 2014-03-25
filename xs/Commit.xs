@@ -46,7 +46,7 @@ create(class, repo, msg, author, committer, parents, tree, ...)
 		}
 
 		rc = git_commit_create(
-			&oid, GIT_SV_TO_PTR(Repository, repo), update_ref, author, committer, NULL,
+			&oid, GIT_REPOSITORY_SV_TO_PTR(Repository, repo), update_ref, author, committer, NULL,
 			SvPVbyte_nolen(msg), tree, count,
 			(const git_commit **) commit_parents
 		);
@@ -54,7 +54,7 @@ create(class, repo, msg, author, committer, parents, tree, ...)
 		Safefree(commit_parents);
 		git_check_error(rc);
 
-		rc = git_commit_lookup(&commit, GIT_SV_TO_PTR(Repository, repo), &oid);
+		rc = git_commit_lookup(&commit, GIT_REPOSITORY_SV_TO_PTR(Repository, repo), &oid);
 		git_check_error(rc);
 
 		GIT_NEW_OBJ_WITH_MAGIC(
