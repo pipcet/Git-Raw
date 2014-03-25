@@ -49,6 +49,15 @@ is $tags[0] -> message, $tag_msg;
 is $tags[1], undef;
 
 $tags[0] -> delete;
+
+system("cd t/test_repo; git tag lightweight-tag");
+
+my @tags = $repo -> tags;
+
+is $tags[0], undef;
+
+system("cd t/test_repo; git tag -d lightweight-tag");
+
 is $repo -> tags, 0;
 
 done_testing;
