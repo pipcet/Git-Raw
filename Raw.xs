@@ -546,6 +546,7 @@ STATIC int git_tag_foreach_cbb(const char *name, git_oid *oid, void *payload) {
 	Tag tag;
 	SV *repo, *cb_arg;
 	git_foreach_payload *pl = payload;
+	git_double_pointer d;
 
 	int rc = git_tag_lookup(&tag, pl -> repo_ptr, oid);
 	git_check_error(rc);
@@ -556,8 +557,10 @@ STATIC int git_tag_foreach_cbb(const char *name, git_oid *oid, void *payload) {
 	repo = SvRV(pl -> repo);
 
 	cb_arg = sv_newmortal();
-	sv_setref_pv(cb_arg, pl -> class, (void *) tag);
-	xs_object_magic_attach_struct(aTHX_ SvRV(cb_arg), SvREFCNT_inc_NN(repo));
+	d = malloc(sizeof *d);
+	d->repo = repo;
+	d->p = tag;
+	sv_setref_pv(cb_arg, pl -> class, (void *) d);
 
 	PUSHMARK(SP);
 	PUSHs(cb_arg);
