@@ -177,6 +177,7 @@ See http://dev.perl.org/licenses/ for more information.
 my %objects;
 
 sub register {
+    my ($self) = @_;
     $objects{$$self} = $self;
     Scalar::Util::weaken($objects{$$self});
 }
