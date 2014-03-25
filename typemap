@@ -10,7 +10,7 @@ Diff_Delta				T_GIT_REF
 Diff_File				T_GIT_REF
 Diff_Hunk				T_GIT_REF
 Filter					T_GIT_REF
-Filter_Source			T_GIT_REF
+Filter_Source				T_GIT_REF
 Index					T_GIT_REF
 Index_Entry				T_GIT_REF
 Patch					T_GIT_REF
@@ -34,15 +34,16 @@ T_GIT_REF
 
 		d->p = (void *) $var;
 		d->repo = NULL;
-		sv_setref_pv($arg, \"Git::Raw::${(my $ntt = $ntype) =~ s/_/::/g;\$ntt}\", (void *) d);
+		$arg = sv_setref_pv(newSV(0), \"Git::Raw::${(my $ntt = $ntype) =~ s/_/::/g;\$ntt}\", (void *) d);
 	}
-	{
+	if (0 && SvTRUE($arg)) {
+		SV *tmp = $arg;
 		dSP;
 		I32 ax;
 		int count;
 
 		ENTER; SAVETMPS; PUSHMARK(SP);
-		XPUSHs($arg);
+		XPUSHs(tmp);
 		PUTBACK;
 
 		call_method("Git::Raw::Tree::register", G_DISCARD);
