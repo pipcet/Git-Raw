@@ -11,6 +11,8 @@ init(class, path, is_bare)
 		Repository repo;
 
 	CODE:
+		git_threads_init();
+
 		rc = git_repository_init(
 			&repo, SvPVbyte_nolen(path), is_bare
 		);
@@ -37,6 +39,8 @@ clone(class, url, path, opts)
 		git_clone_options clone_opts = GIT_CLONE_OPTIONS_INIT;
 
 	CODE:
+		git_threads_init();
+
 		clone_opts.remote_callbacks.payload = &cbs;
 
 		if ((opt = hv_fetchs(opts, "bare", 0)) && SvIV(*opt) != 0)
